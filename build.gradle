@@ -1,0 +1,21 @@
+
+plugins {
+    id 'java-library'
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation libs.groovy
+    testImplementation libs.spock.core
+    testImplementation libs.junit
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
