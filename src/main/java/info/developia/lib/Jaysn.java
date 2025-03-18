@@ -1,60 +1,64 @@
 package info.developia.lib;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 public class Jaysn {
-    private static final Pattern JSON_PATTERN = Pattern.compile("\\\"(\\w+)\\\"\\s*:\\s*((null)|(true|false)|(-?\\d*\\.?\\d*)|\"(\\w+)\")");
-//    private static final Pattern JSON_PATTERN = Pattern.compile("\"(\\w+)\"\\s*:\\s*\\{?(.*),*|}");
-//    private static final Pattern JSON_PATTERN = Pattern.compile("\"(\\w+)\"\\s*:\\s*(?:[^{}]*|(\\{.*?}))");
-//    private static final Pattern JSON_PATTERN = Pattern.compile("\"(\\w+)\"\\s*:\\s*(?:\"([^\"]*)\"|(-?\\d+(?:\\.\\d+)?)|(true|false|null)|)");
-//    private static final Pattern JSON_PATTERN = Pattern.compile("\"(\\w+)\"\\s*:\\s*(\\{[^{}]*}|\"[^\"]*\"|true|false|null|\\d+(?:\\.\\d+)?)");
+    //    private static final String illegal = "ILLEGAL";
+//    private static final String eOF = "EOF";
+//    private static final String string = "STRING";
+//    private static final String number = "NUMBER";
+    private static final String leftBrace = "{";
+    private static final String rightBrace = "}";
+    private static final String leftBracket = "[";
+    private static final String rightBracket = "]";
+    private static final String comma = ",";
+    private static final String colon = ":";
+//    private static final String trueValue = "TRUE";
+//    private static final String falseValue = "FALSE";
+//    private static final String nullValue = "NULL";
 
     public static <T> T parse(String json, Class<T> clazz) {
-        var fields = getFieldsToRead(clazz);
-        extractFieldsFromJson(json, fields);
-        for (var field : fields) {
-            System.out.println(field.getName());
+        String[] tokens = getTokens(json);
+        Node currentNode = null;
+
+        for (int i = 0; i < tokens.length; i++) {
+            String token = tokens[i];
+            switch (token) {
+                case leftBrace:
+                    var name = currentNode == null ? "root" : currentNode.name;
+                    currentNode = new Node(Node.Type.object, name, token);
+                    continue;
+                case rightBrace:
+                    currentNode = currentNode == null ? null : currentNode.parent;
+                    continue;
+                case comma:
+                    continue;
+                default:
+                    currentNode = parseToken(token, currentNode);
+            }
         }
         return null;
     }
 
-    private static void extractFieldsFromJson(String json, Field[] fields) {
-        for (var field : fields) {
-            System.out.println("Extracting field: " + field.getName());
+    private static Node parseToken(String token, Node currentNode) {
+        var propertyValue = token.split(":");
+        var name = propertyValue[0];
+        if (propertyValue.length == 2) {
+            var value = propertyValue[1];
+            currentNode.addChild(new Node(Node.Type.property, name, value));
+            return currentNode;
+        } else if (propertyValue.length == 1) {
+            var node = new Node(Node.Type.object, name, currentNode);
+            currentNode.addChild(node);
+            return node;
         }
+        return currentNode;
     }
 
-    private static <T> Field[] getFieldsToRead(Class<T> clazz) {
-        return clazz.getDeclaredFields();
-    }
-
-    private static Map<String, Object> readProperties(String json) {
-        System.out.println("Reading JSON: " + json);
-        Map<String, Object> result = new HashMap<>();
-        Matcher matcher = JSON_PATTERN.matcher(json.replaceAll("\\R", ""));
-        while (matcher.find()) {
-            String key = matcher.group(1);
-            String fullValue = matcher.group(2);
-            String nullValue = matcher.group(3);
-            String boolValue = matcher.group(4);
-            String numberValue = matcher.group(5);
-            String stringValue = matcher.group(6);
-//
-//            if (objectValue != null) {
-//                result.put(key, readProperties(objectValue));
-//            } else {
-            String value = stringValue != null ? stringValue
-                    : numberValue != null ? numberValue
-                    : boolValue != null ? boolValue
-                    : nullValue != null ? null
-                    : fullValue;
-            result.put(key, value);
-//            }
-        }
-        return result;
+    private static String[] getTokens(String json) {
+        return Arrays.stream(json.splitWithDelimiters("[{}\\[\\],]", 0))
+                .filter(token -> !token.isBlank())
+                .map(String::trim)
+                .toArray(String[]::new);
     }
 }

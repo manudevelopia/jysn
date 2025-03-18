@@ -61,6 +61,7 @@ class JaysnTest extends Specification {
         then:
         readProperties.property1 == 'value1'
     }
+
     def "should read json propertiess"() {
         given:
         String json = '''{
@@ -80,10 +81,51 @@ class JaysnTest extends Specification {
            },
            "boolean2":false,
            "boolean3":false,
+           "array":[
+               {
+                    "array-prop1":"value1",
+                    "array-prop2":"value2"
+                }
+           ]
         }'''
         when:
-        def result = Jaysn.readProperties(json)
+        Jaysn.parse(json, User.class)
         then:
-        readProperties.property1 == 'value1'
+        noExceptionThrown()
+    }
+
+    def "should read json propertiess"() {
+        given:
+        String json = '''{
+           "property1":"value1",
+           "number1":5.0,
+           "number2":15,
+           "number3":-15,
+           "boolean1":true,
+           "nullable":null
+        }'''
+        when:
+        Jaysn.parse(json, User.class)
+        then:
+        noExceptionThrown()
+    }
+
+    def "should read nested object properties"() {
+        given:
+        String json = '''{
+           "property1":"value1",
+           "object":{
+                "obj-prop1":"value1",
+                "obj-prop2":"value2",
+                "obj-obj1":{
+                    "obj-prop1":"value1",
+                    "obj-prop2":"value2"
+                }
+           }
+        }'''
+        when:
+        Jaysn.parse(json, User.class)
+        then:
+        noExceptionThrown()
     }
 }
