@@ -116,13 +116,32 @@ class JaysnTest extends Specification {
            "property1":"value1",
            "object":{
                 "obj-prop1":"value1",
-                "obj-prop2":"value2",
                 "obj-obj1":{
-                    "obj-prop1":"value1",
-                    "obj-prop2":"value2"
-                }
+                    "obj1-prop1":"value1",
+                    "obj1-prop2":"value2"
+                },
+                "obj-prop2":"value2"
            }
+           "property2":"value2",
         }'''
+        when:
+        Jaysn.parse(json, User.class)
+        then:
+        noExceptionThrown()
+    }
+
+    def "should read objects array"() {
+        given:
+        String json = '''[
+           {
+               "object1-property1":"value1",
+               "object1-property2":"value2",
+           },
+           {
+               "object2-property1":"value1",
+               "object2-property2":"value2",
+           },
+        ]'''
         when:
         Jaysn.parse(json, User.class)
         then:
