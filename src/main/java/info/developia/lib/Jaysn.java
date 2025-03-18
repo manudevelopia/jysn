@@ -1,6 +1,8 @@
 package info.developia.lib;
 
+import info.developia.lib.json.JsonNode;
 import info.developia.lib.json.JsonObject;
+import info.developia.lib.json.JsonObjectArray;
 import info.developia.lib.json.JsonProperty;
 
 public class Jaysn {
@@ -18,16 +20,25 @@ public class Jaysn {
         return null;
     }
 
-    private static JsonObject getNodes(String[] tokens) {
-        JsonObject currentJsonObject = null;
+    private static JsonNode getNodes(String[] tokens) {
+        JsonNode currentJsonObject = null;
 
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
             switch (token) {
-                case leftBrace:
-                    currentJsonObject = new JsonObject(currentJsonObject);
+                case leftBracket:
+                    currentJsonObject = new JsonObjectArray(currentJsonObject);
                     continue;
-                case rightBrace:
+                case leftBrace:
+                    if (currentJsonObject instanceof JsonObjectArray) {
+                        var object = new JsonObject(currentJsonObject);
+                        ((JsonObjectArray) currentJsonObject).add(object);
+                        currentJsonObject = object;
+                    } else {
+                        currentJsonObject = new JsonObject(currentJsonObject);
+                    }
+                    continue;
+                case rightBracket, rightBrace:
                     if (currentJsonObject.parent != null) {
                         currentJsonObject = currentJsonObject.parent;
                     }
@@ -39,11 +50,20 @@ public class Jaysn {
                     var name = propertyNameValue[0];
                     if (propertyNameValue.length == 2) {
                         var value = propertyNameValue[1];
-                        currentJsonObject.add(new JsonProperty(name, value));
+                        ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
                     } else if (propertyNameValue.length == 1) {
-                        var value = new JsonObject(currentJsonObject);
-                        currentJsonObject.add(new JsonProperty(name, value));
-                        currentJsonObject = value;
+                        if (leftBracket.equals(tokens[i + 1])) {
+                            var array = new JsonObjectArray(currentJsonObject);
+                            i++;
+                            var value = new JsonObject(array);
+                            array.add(value);
+                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
+                            currentJsonObject = value;
+                        } else {
+                            var value = new JsonObject(currentJsonObject);
+                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
+                            currentJsonObject = value;
+                        }
                         i++;
                     }
             }

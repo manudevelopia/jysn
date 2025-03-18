@@ -5,10 +5,9 @@ import java.util.List;
 
 public class JsonObject extends JsonNode {
     final List<JsonProperty> properties = new ArrayList<>();
-    public final JsonObject parent;
 
-    public JsonObject(JsonObject parent) {
-        this.parent = parent;
+    public JsonObject(JsonNode parent) {
+        super(parent);
     }
 
     public void add(JsonProperty property) {

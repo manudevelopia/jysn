@@ -143,7 +143,34 @@ class JaysnTest extends Specification {
            },
         ]'''
         when:
-        Jaysn.parse(json, User.class)
+        def jsonNode = Jaysn.parse(json, User.class)
+        then:
+        noExceptionThrown()
+    }
+
+    def "should read objects nested array"() {
+        given:
+        String json = '''[
+           {
+               "object1-property1":"value1",
+               "object1-property2":"value2",
+           },
+           {
+               "object2-array1": [
+                     {
+                          "array1-object1-property1":"value1",
+                          "array1-object1-property2":"value2",
+                     },
+                     {
+                          "array1-object2-property1":"value1",
+                          "array1-object2-property2":"value2",
+                     }
+               ],
+               "object2-property2":"value2",
+           }
+        ]'''
+        when:
+        def jsonNode = Jaysn.parse(json, User.class)
         then:
         noExceptionThrown()
     }
