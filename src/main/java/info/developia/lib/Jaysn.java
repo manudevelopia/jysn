@@ -22,7 +22,6 @@ public class Jaysn {
 
     private static JsonNode getNodes(String[] tokens) {
         JsonNode currentJsonObject = null;
-
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
             switch (token) {
@@ -52,18 +51,17 @@ public class Jaysn {
                         var value = propertyNameValue[1];
                         ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
                     } else if (propertyNameValue.length == 1) {
+                        JsonObject value;
                         if (leftBracket.equals(tokens[i + 1])) {
                             var array = new JsonObjectArray(currentJsonObject);
                             i++;
-                            var value = new JsonObject(array);
+                            value = new JsonObject(array);
                             array.add(value);
-                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
-                            currentJsonObject = value;
                         } else {
-                            var value = new JsonObject(currentJsonObject);
-                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
-                            currentJsonObject = value;
+                            value = new JsonObject(currentJsonObject);
                         }
+                        ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
+                        currentJsonObject = value;
                         i++;
                     }
             }
