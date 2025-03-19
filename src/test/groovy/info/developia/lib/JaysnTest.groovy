@@ -1,6 +1,6 @@
 package info.developia.lib
 
-
+import info.developia.lib.model.User
 import spock.lang.Specification
 
 class JaysnTest extends Specification {
@@ -11,7 +11,7 @@ class JaysnTest extends Specification {
             "age": 30
         }'''
         when:
-        def result = Jaysn.parse(json, info.developia.lib.model.User.class)
+        def result = Jaysn.parse(json, User.class)
         then:
         with(result) {
             name == 'John'
@@ -26,7 +26,7 @@ class JaysnTest extends Specification {
             "age": 30
         }]'''
         when:
-        def result = Jaysn.parse(json, info.developia.lib.model.User.class)
+        def result = Jaysn.parse(json, User)
         then:
         with(result) {
             name == 'John'
@@ -88,7 +88,7 @@ class JaysnTest extends Specification {
            ]
         }'''
         when:
-        Jaysn.parse(json, info.developia.lib.model.User.class)
+        Jaysn.parse(json, User)
         then:
         noExceptionThrown()
     }
@@ -104,7 +104,7 @@ class JaysnTest extends Specification {
            "nullable":null
         }'''
         when:
-        Jaysn.parse(json, info.developia.lib.model.User.class)
+        Jaysn.parse(json, User)
         then:
         noExceptionThrown()
     }
@@ -124,7 +124,7 @@ class JaysnTest extends Specification {
            "property2":"value2",
         }'''
         when:
-        Jaysn.parse(json, info.developia.lib.model.User.class)
+        Jaysn.parse(json, User)
         then:
         noExceptionThrown()
     }
@@ -142,7 +142,7 @@ class JaysnTest extends Specification {
            },
         ]'''
         when:
-        def jsonNode = Jaysn.parse(json, info.developia.lib.model.User.class)
+        def jsonNode = Jaysn.parse(json, User)
         then:
         noExceptionThrown()
     }
@@ -169,7 +169,7 @@ class JaysnTest extends Specification {
            }
         ]'''
         when:
-        def jsonNode = Jaysn.parse(json, info.developia.lib.model.User.class)
+        def jsonNode = Jaysn.parse(json, User)
         then:
         noExceptionThrown()
     }

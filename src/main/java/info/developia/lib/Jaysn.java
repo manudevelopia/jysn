@@ -29,13 +29,11 @@ public class Jaysn {
                     currentJsonObject = new JsonObjectArray(currentJsonObject);
                     continue;
                 case leftBrace:
+                    var object = new JsonObject(currentJsonObject);
                     if (currentJsonObject instanceof JsonObjectArray) {
-                        var object = new JsonObject(currentJsonObject);
                         ((JsonObjectArray) currentJsonObject).add(object);
-                        currentJsonObject = object;
-                    } else {
-                        currentJsonObject = new JsonObject(currentJsonObject);
                     }
+                    currentJsonObject = object;
                     continue;
                 case rightBracket, rightBrace:
                     if (currentJsonObject.parent != null) {
@@ -51,17 +49,18 @@ public class Jaysn {
                         var value = propertyNameValue[1];
                         ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
                     } else if (propertyNameValue.length == 1) {
-                        JsonObject value;
                         if (leftBracket.equals(tokens[i + 1])) {
-                            var array = new JsonObjectArray(currentJsonObject);
+                            JsonNode value = new JsonObjectArray(currentJsonObject);
                             i++;
-                            value = new JsonObject(array);
-                            array.add(value);
+                            var jsonObjectArray = new JsonObject(value);
+                            ((JsonObjectArray) value).add(jsonObjectArray);
+                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
+                            currentJsonObject = jsonObjectArray;
                         } else {
-                            value = new JsonObject(currentJsonObject);
+                            JsonNode value = new JsonObject(currentJsonObject);
+                            ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
+                            currentJsonObject = value;
                         }
-                        ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
-                        currentJsonObject = value;
                         i++;
                     }
             }
