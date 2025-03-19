@@ -1,4 +1,4 @@
-package org.example;
+package info.developia.lib.model;
 
 public class User {
     String name;
