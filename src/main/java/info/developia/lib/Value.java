@@ -10,4 +10,11 @@ public class Value {
             default -> new RuntimeException("Unsupported type " + type.getName());
         };
     }
+
+    public static String extract(String token) {
+        var value = token.trim();
+        if (value.startsWith("\"") && value.endsWith("\""))
+            return value.substring(1, value.length() - 1);
+        return value;
+    }
 }

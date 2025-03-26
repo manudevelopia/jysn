@@ -1,16 +1,16 @@
 package info.developia.lib.json;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonObject extends JsonNode {
-    public final List<JsonProperty> properties = new ArrayList<>();
+    public final Map<String, JsonProperty> properties = new HashMap<>();
 
     public JsonObject(JsonNode parent) {
         super(parent);
     }
 
     public void add(JsonProperty property) {
-        properties.add(property);
+        properties.put(property.name, property);
     }
 }
