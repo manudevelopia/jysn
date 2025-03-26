@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'groovy'
-//    id 'me.champeau.jmh' version '0.7.2'
+    id 'me.champeau.jmh' version '0.7.2'
 }
 
 repositories {
@@ -15,8 +15,8 @@ dependencies {
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-//    jmh 'org.openjdk.jmh:jmh-core:1.37'
-//    jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+    jmh 'org.openjdk.jmh:jmh-core:1.37'
+    jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
 }
 
 tasks.named('test') {
