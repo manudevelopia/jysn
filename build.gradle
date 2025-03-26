@@ -9,10 +9,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation libs.groovy
-    testImplementation libs.spock.core
-    testImplementation libs.junit
-
+    testImplementation 'org.codehaus.groovy:groovy:3.0.19'
+    testImplementation 'junit:junit", version.re:4.13.2'
+    testImplementation 'org.spockframework:spock-core:2.2-groovy-3.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     jmh 'org.openjdk.jmh:jmh-core:1.37'
