@@ -9,4 +9,12 @@ public class JsonProperty extends JsonNode {
         this.name = name;
         this.value = value;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Object getValue() {
+        return value;
+    }
 }

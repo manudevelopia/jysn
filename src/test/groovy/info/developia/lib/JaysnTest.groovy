@@ -1,5 +1,6 @@
 package info.developia.lib
 
+import info.developia.lib.dao.UserDao
 import info.developia.lib.model.User
 import spock.lang.Specification
 
@@ -11,7 +12,7 @@ class JaysnTest extends Specification {
             "age": 30
         }'''
         when:
-        def result = Jaysn.parse(json, User.class)
+        def result = Jaysn.getFields(User)
         then:
         with(result) {
             name == 'John'
@@ -27,6 +28,21 @@ class JaysnTest extends Specification {
         }]'''
         when:
         def result = Jaysn.parse(json, User)
+        then:
+        with(result) {
+            name == 'John'
+            age == 30
+        }
+    }
+
+    def "should deserialize to list of object dao"() {
+        given:
+        String json = '''{
+            "name": "John",
+            "age": 30
+        }'''
+        when:
+        def result = Jaysn.parse(json, UserDao)
         then:
         with(result) {
             name == 'John'
