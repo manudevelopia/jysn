@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonObjectArray extends JsonNode {
-    List<JsonObject> jsonObjects = new ArrayList<>();
+    final List<JsonObject> jsonObjects = new ArrayList<>();
 
     public JsonObjectArray(JsonNode parent) {
         super(parent);

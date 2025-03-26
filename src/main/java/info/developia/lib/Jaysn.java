@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+
 public class Jaysn {
 
     private static final String leftBrace = "{";
@@ -37,7 +38,7 @@ public class Jaysn {
     private static <T> T buildObject(Class<T> clazz, Object fields, JsonNode nodes) {
         if (clazz.isRecord()) {
             try {
-                return buildRecord(clazz, fields, nodes);
+                return buildRecord(clazz, nodes);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -53,31 +54,22 @@ public class Jaysn {
         }
     }
 
-    private static <T> T buildRecord(Class<T> clazz, Object fields, JsonNode nodes)
+    private static <T> T buildRecord(Class<T> clazz, JsonNode nodes)
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         RecordComponent[] components = clazz.getRecordComponents();
         Class<?>[] paramTypes = new Class<?>[components.length];
         Object[] args = new Object[components.length];
-        var properties = ((JsonObject) nodes).getProperties().stream().collect(Collectors
-                .toMap(jsonProperty -> jsonProperty.getName().trim().replace("\"", ""),
-                        jsonProperty -> jsonProperty.getValue().toString().trim().replace("\"", "")));
 
+        var properties = ((JsonObject) nodes).properties.stream().collect(Collectors
+                .toMap(jsonProperty -> jsonProperty.name.trim().replace("\"", ""),
+                        jsonProperty -> jsonProperty.value.toString().trim().replace("\"", "")));
         for (int i = 0; i < components.length; i++) {
             RecordComponent comp = components[i];
             paramTypes[i] = comp.getType();
-            args[i] = castValue(comp.getType(), properties.get(comp.getName()));
+            args[i] = Value.cast(comp.getType(), properties.get(comp.getName()));
         }
         Constructor<T> constructor = clazz.getDeclaredConstructor(paramTypes);
         return constructor.newInstance(args);
-    }
-
-    private static Object castValue(Class<?> type, Object value) {
-        return switch (type.getName()) {
-            case "java.lang.String" -> value;
-            case "int" -> Integer.parseInt(value.toString());
-            case "java.lang.Integer" -> Integer.valueOf(value.toString());
-            default -> new RuntimeException("Unsupported type " + type.getName());
-        };
     }
 
     private static Object[] getConstructorParametersInstances(Constructor<?> constructor) {
@@ -88,7 +80,7 @@ public class Jaysn {
         return parametersInstances;
     }
 
-    private static <T> Object getFields(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private static <T> Object getFields(Class<T> clazz) {
         var fields = new ArrayList<String>();
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(info.developia.lib.annotation.JsonProperty.class)) {
