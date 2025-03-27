@@ -17,9 +17,17 @@ public class RecordBuilder {
         for (int i = 0; i < components.length; i++) {
             RecordComponent comp = components[i];
             paramTypes[i] = comp.getType();
-            args[i] = Value.cast(comp.getType(), ((JsonObject) nodes).properties.get(comp.getName()).value);
+            args[i] = isUserDefinedClass(comp.getType()) ?
+                    build(comp.getType(), (JsonNode) ((JsonObject) nodes).properties.get(comp.getName()).value) :
+                    Value.cast(comp.getType(), ((JsonObject) nodes).properties.get(comp.getName()).value);
         }
         Constructor<T> constructor = clazz.getDeclaredConstructor(paramTypes);
         return constructor.newInstance(args);
+    }
+
+    private static boolean isUserDefinedClass(Class<?> clazz) {
+        return clazz.getClassLoader() != null &&
+                !clazz.getName().startsWith("java.") &&
+                !clazz.getName().startsWith("javax.");
     }
 }

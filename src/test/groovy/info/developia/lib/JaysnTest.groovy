@@ -39,7 +39,10 @@ class JaysnTest extends Specification {
         given:
         String json = '''{
             "name": "John",
-            "age": 30
+            "age": 30,
+            "profile" {
+                "role": "admin"
+            }
         }'''
         when:
         def result = Jaysn.parse(json, UserDao)
