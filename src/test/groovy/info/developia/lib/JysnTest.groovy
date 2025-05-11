@@ -1,23 +1,24 @@
 package info.developia.lib
 
+import info.developia.lib.alt.Jysn
 import info.developia.lib.dao.UserDao
 import spock.lang.Specification
 
-class JaysnTest extends Specification {
-//    def "should deserialize to object"() {
-//        given:
-//        String json = '''{
-//            "name": "John",
-//            "age": 30
-//        }'''
-//        when:
-//        def result = Jaysn.getFields(User)
-//        then:
-//        with(result) {
-//            name == 'John'
-//            age == 30
-//        }
-//    }
+class JysnTest extends Specification {
+    def "should deserialize to object"() {
+        given:
+        String json = '''{
+            "name": "John",
+            "age": 30
+        }'''
+        when:
+        def result = Jysn.to(json, UserDao)
+        then:
+        with(result) {
+            name == 'John'
+            age == 30
+        }
+    }
 
     def "should deserialize to list of object"() {
         given:
@@ -29,7 +30,7 @@ class JaysnTest extends Specification {
             "age": 53
         }]'''
         when:
-        def result = Jaysn.parseList(json, UserDao)
+        def result = Jysn.to(json, UserDao)
         then:
         result[0].name == 'John' && result[0].age == 30
         result[1].name == 'Sarah' && result[1].age == 53

@@ -1,6 +1,9 @@
 package info.developia.lib.dao;
 
+import java.util.List;
+
 public record ProfileDao(
-        String role
+        List<String> roles,
+        String status
 ) {
 }

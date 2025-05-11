@@ -45,6 +45,11 @@ public class Parser {
                         if (leftBracket.equals(tokens[i + 1])) {
                             JsonNode value = new JsonObjectArray(currentJsonObject);
                             i++;
+
+                            // its an object, next is {
+                            // its an array, next is [
+                            // its a value, next is "
+
                             var jsonObjectArray = new JsonObject(value);
                             ((JsonObjectArray) value).add(jsonObjectArray);
                             ((JsonObject) currentJsonObject).add(new JsonProperty(name, value, currentJsonObject));
