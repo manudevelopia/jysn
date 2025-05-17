@@ -2,7 +2,7 @@ package info.developia.lib.dao;
 
 public record UserDao(
         String name
-        ,int age
+        , String age
 //        ,ProfileDao profile
 ) {
 }

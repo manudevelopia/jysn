@@ -6,7 +6,7 @@ import java.lang.reflect.RecordComponent;
 
 public class RecordBuilder {
 
-    public static <T> T build(Class<T> clazz, JsonValue nodes)
+    public static Class<? extends Record> build(Class<?> clazz, JsonValue nodes)
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         RecordComponent[] components = clazz.getRecordComponents();
         Class<?>[] paramTypes = new Class<?>[components.length];
@@ -18,8 +18,8 @@ public class RecordBuilder {
                     build(comp.getType(), ((JsonObject) nodes).members.get(comp.getName())) :
                     cast(comp.getType(), ((JsonObject) nodes).members.get(comp.getName()));
         }
-        Constructor<T> constructor = clazz.getDeclaredConstructor(paramTypes);
-        return constructor.newInstance(args);
+        Constructor<?> constructor = clazz.getDeclaredConstructor(paramTypes);
+        return (Class<? extends Record>) constructor.newInstance(args);
     }
 
     private static boolean isUserDefinedClass(Class<?> clazz) {

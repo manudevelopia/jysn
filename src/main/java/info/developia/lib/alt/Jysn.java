@@ -1,25 +1,26 @@
 package info.developia.lib.alt;
 
+import info.developia.lib.inter.Jysnn;
 
 import java.util.List;
 
 public class Jysn {
 
-//    Jysn.from(json).to(UserDao).orElse(null).onFail()
+//    Jysn.from(json).to(UserDao).orElse(null).onFail().parse()
 
     public static <T> T to(String json, Class<T> clazz) {
-        if (clazz.isRecord()) {
-            try {
-                var nodes = parse(json);
-                return buildObject(clazz, nodes);
-            } catch (Exception e) {
-                throw new RuntimeException("Json cannot be parsed to %s %s".formatted(clazz.getName(), e.getMessage()));
-            }
-        }
+//        if (clazz.isRecord()) {
+//            try {
+//                var nodes = parse(json);
+//                return buildObject(clazz, nodes);
+//            } catch (Exception e) {
+//                throw new RuntimeException("Json cannot be parsed to %s %s".formatted(clazz.getName(), e.getMessage()));
+//            }
+//        }
         throw new RuntimeException("Object are no supported yet");
     }
 
-    private static JsonValue parse(String json) {
+    public static JsonValue parse(String json) {
         JsonLexer lexer = new JsonLexer(json);
         List<JsonToken> tokens = lexer.tokenize();
         JsonParser parser = new JsonParser(tokens);
@@ -27,7 +28,7 @@ public class Jysn {
     }
 
 
-    private static <T> T buildObject(Class<T> clazz, JsonValue nodes) {
+    public static Record buildObject(Class<? extends Record> clazz, JsonValue nodes) {
         try {
             return RecordBuilder.build(clazz, nodes);
         } catch (Exception e) {
