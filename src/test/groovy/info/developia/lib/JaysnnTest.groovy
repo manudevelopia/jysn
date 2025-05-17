@@ -28,15 +28,15 @@ class JaysnnTest extends Specification {
         }'''
         when:
         def result = Jysnn.from(json).to(UserDao)
-                .orElse(new UserDao('Default John', '77') as UserDao)
+                .orElse(new UserDao('Default John', '77'))
                 .onFail(() -> System.println('Vaya error!!!'))
 //                .failWith(new RuntimeException())
                 .parse()
 
         then:
         with(result) {
-            name == 'Default John'
-            age == 30
+            name == 'John'
+            age == '30'
         }
     }
 

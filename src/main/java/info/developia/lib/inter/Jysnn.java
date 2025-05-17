@@ -35,19 +35,22 @@ public class Jysnn {
         return this;
     }
 
-//    public void failWith(RuntimeException throwable) {
-//        this.throwable = throwable;
-//    }
+    public Jysnn failWith(RuntimeException throwable) {
+        this.throwable = throwable;
+        return this;
+    }
 
     public Record parse() {
         try {
             var nodes = Jysn.parse(json);
             return buildObject(record, nodes);
         } catch (Exception e) {
-            failAction.run();
-//            throw throwable;
-
-//            throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
+            if (failAction != null) {
+                failAction.run();
+            }
+            if (throwable != null) {
+                throw throwable;
+            }
         }
         return fallback;
     }
