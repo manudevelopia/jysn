@@ -5,38 +5,23 @@ import info.developia.lib.inter.Jysnn
 import spock.lang.Specification
 
 class JaysnnTest extends Specification {
-//    def "should deserialize to object"() {
-//        given:
-//        String json = '''{
-//            "name": "John",
-//            "age": 30
-//        }'''
-//        when:
-//        def result = Jaysn.getFields(User)
-//        then:
-//        with(result) {
-//            name == 'John'
-//            age == 30
-//        }
-//    }
-
-    def "should deserialize to list of object"() {
+    def "should deserialize to object"() {
         given:
         String json = '''{
             "name": "John",
-            "age": "30"
+            "age": 30
         }'''
         when:
         def result = Jysnn.from(json).to(UserDao)
-                .orElse(new UserDao('Default John', '77'))
-                .onFail(() -> System.println('Vaya error!!!'))
-//                .failWith(new RuntimeException())
+                .orElse(new UserDao('Default John', 77))
+                .onFail(() -> System.println('That was an error!!!'))
+                .failWith(new RuntimeException("Error, cannot continue"))
                 .parse()
 
         then:
         with(result) {
             name == 'John'
-            age == '30'
+            age == 30
         }
     }
 

@@ -51,6 +51,9 @@ public class Jysnn {
             if (throwable != null) {
                 throw throwable;
             }
+            if (fallback == null) {
+                throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
+            }
         }
         return fallback;
     }

@@ -33,6 +33,8 @@ public class RecordBuilder {
             case "java.lang.String" -> value.toString();
             case "int" -> Integer.parseInt(value.toString());
             case "java.lang.Integer" -> Integer.valueOf(value.toString());
+            case "long" -> Long.parseLong(value.toString());
+            case "java.lang.Long" -> Long.valueOf(value.toString());
             default -> new RuntimeException("Unsupported type " + type.getName());
         };
     }
