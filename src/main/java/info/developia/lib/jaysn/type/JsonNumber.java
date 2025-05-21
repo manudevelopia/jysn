@@ -1,4 +1,4 @@
-package info.developia.lib.alt;
+package info.developia.lib.jaysn.type;
 
 public class JsonNumber implements JsonValue {
     public final String value;

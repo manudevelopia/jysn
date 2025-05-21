@@ -1,8 +1,4 @@
-package info.developia.lib.inter;
-
-import info.developia.lib.alt.Jysn;
-
-import static info.developia.lib.alt.Jysn.buildObject;
+package info.developia.lib.jaysn;
 
 public class Jysnn {
 
@@ -43,7 +39,7 @@ public class Jysnn {
     public Record parse() {
         try {
             var nodes = Jysn.parse(json);
-            return buildObject(record, nodes);
+            return RecordBuilder.build(record, nodes);
         } catch (Exception e) {
             if (failAction != null) {
                 failAction.run();

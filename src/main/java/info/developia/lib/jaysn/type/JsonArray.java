@@ -1,4 +1,4 @@
-package info.developia.lib.alt;
+package info.developia.lib.jaysn.type;
 
 import java.util.ArrayList;
 import java.util.List;

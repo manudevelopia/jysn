@@ -1,6 +1,6 @@
-package info.developia.lib.alt;
+package info.developia.lib.jaysn;
 
-import info.developia.lib.inter.Jysnn;
+import info.developia.lib.jaysn.type.JsonValue;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package info.developia.lib.annotation;
+package info.developia.lib.jaysn.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

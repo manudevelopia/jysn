@@ -1,27 +1,40 @@
 package info.developia.lib
 
 import info.developia.lib.dao.UserDao
-import info.developia.lib.inter.Jysnn
+import info.developia.lib.jaysn.Jysnn
 import spock.lang.Specification
 
 class JaysnnTest extends Specification {
     def "should deserialize to object"() {
         given:
-        String json = '''{
+        String json =
+        '''{
             "name": "John",
-            "age": 30
+            "age": 30,
+            "profile": {
+                        "status": "active",
+                        "roles": [ "admin", "user" ],
+                        "ids": [ 1, 2, 3 ]
+                        }
         }'''
         when:
         def result = Jysnn.from(json).to(UserDao)
-                .orElse(new UserDao('Default John', 77))
-                .onFail(() -> System.println('That was an error!!!'))
-                .failWith(new RuntimeException("Error, cannot continue"))
+//                .orElse(new UserDao('Default John', 77))
+//                .onFail(() -> System.println('That was an error!!!'))
+//                .failWith(new RuntimeException("Error, cannot continue"))
                 .parse()
-
         then:
         with(result) {
             name == 'John'
             age == 30
+            profile.status == 'active'
+            profile.roles.size() == 2
+            profile.roles[0] == 'admin'
+            profile.roles[1] == 'user'
+            profile.ids.size() == 3
+            profile.ids[0] == 1
+            profile.ids[1] == 2
+            profile.ids[2] == 3
         }
     }
 

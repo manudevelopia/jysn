@@ -1,6 +1,6 @@
 package info.developia.lib.model;
 
-import info.developia.lib.annotation.JsonProperty;
+import info.developia.lib.jaysn.annotation.JsonProperty;
 
 public class User {
     public String email;

@@ -1,6 +1,6 @@
 package info.developia.lib
 
-import info.developia.lib.alt.Jysn
+import info.developia.lib.jaysn.Jysn
 import info.developia.lib.dao.UserDao
 import spock.lang.Specification
 
