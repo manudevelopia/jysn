@@ -1,4 +1,4 @@
-package info.developia.lib.jaysn;
+package info.developia.lib.jaysn.processor;
 
 public class JsonToken {
     public final JsonTokenType type;

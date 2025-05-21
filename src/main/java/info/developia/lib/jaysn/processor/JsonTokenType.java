@@ -1,4 +1,4 @@
-package info.developia.lib.jaysn;
+package info.developia.lib.jaysn.processor;
 
 public enum JsonTokenType {
     LBRACE, RBRACE, LBRACKET, RBRACKET, COLON, COMMA,

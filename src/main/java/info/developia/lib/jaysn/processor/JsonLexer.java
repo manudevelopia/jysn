@@ -1,4 +1,4 @@
-package info.developia.lib.jaysn;
+package info.developia.lib.jaysn.processor;
 
 import java.util.ArrayList;
 import java.util.List;

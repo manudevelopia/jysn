@@ -1,38 +1,68 @@
 package info.developia.lib.jaysn;
 
+import info.developia.lib.jaysn.processor.JsonLexer;
+import info.developia.lib.jaysn.processor.JsonParser;
+import info.developia.lib.jaysn.processor.RecordBuilder;
 import info.developia.lib.jaysn.type.JsonValue;
-
-import java.util.List;
 
 public class Jysn {
 
-//    Jysn.from(json).to(UserDao).orElse(null).onFail().parse()
+    private final String json;
+    private Runnable failAction;
+    private Class<? extends Record> record;
+    private Record fallback;
+    private RuntimeException throwable;
 
-    public static <T> T to(String json, Class<T> clazz) {
-//        if (clazz.isRecord()) {
-//            try {
-//                var nodes = parse(json);
-//                return buildObject(clazz, nodes);
-//            } catch (Exception e) {
-//                throw new RuntimeException("Json cannot be parsed to %s %s".formatted(clazz.getName(), e.getMessage()));
-//            }
-//        }
-        throw new RuntimeException("Object are no supported yet");
+    public Jysn(String json) {
+        this.json = json;
     }
 
-    public static JsonValue parse(String json) {
-        JsonLexer lexer = new JsonLexer(json);
-        List<JsonToken> tokens = lexer.tokenize();
-        JsonParser parser = new JsonParser(tokens);
-        return parser.parse();
+    public static Jysn from(String json) {
+        return new Jysn(json);
     }
 
+    public Jysn to(Class<? extends Record> record) {
+        this.record = record;
+        return this;
+    }
 
-    public static Record buildObject(Class<? extends Record> clazz, JsonValue nodes) {
+    public Jysn orElse(Record fallback) {
+        this.fallback = fallback;
+        return this;
+    }
+
+    public Jysn onFail(Runnable failAction) {
+        this.failAction = failAction;
+        return this;
+    }
+
+    public Jysn failWith(RuntimeException throwable) {
+        this.throwable = throwable;
+        return this;
+    }
+
+    public Record parse() {
         try {
-            return RecordBuilder.build(clazz, nodes);
+            var nodes = parse(json);
+            return RecordBuilder.build(record, nodes);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (failAction != null) {
+                failAction.run();
+            }
+            if (throwable != null) {
+                throw throwable;
+            }
+            if (fallback == null) {
+                throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
+            }
         }
+        return fallback;
+    }
+
+    private JsonValue parse(String json) {
+        var lexer = new JsonLexer(json);
+        var tokens = lexer.tokenize();
+        var parser = new JsonParser(tokens);
+        return parser.parse();
     }
 }

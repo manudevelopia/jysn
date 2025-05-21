@@ -1,10 +1,10 @@
 package info.developia.lib
 
 import info.developia.lib.dao.UserDao
-import info.developia.lib.jaysn.Jysnn
+import info.developia.lib.jaysn.Jysn
 import spock.lang.Specification
 
-class JaysnnTest extends Specification {
+class JysnSpec extends Specification {
     def "should deserialize to object"() {
         given:
         String json =
@@ -18,7 +18,7 @@ class JaysnnTest extends Specification {
                         }
         }'''
         when:
-        def result = Jysnn.from(json).to(UserDao)
+        def result = Jysn.from(json).to(UserDao)
 //                .orElse(new UserDao('Default John', 77))
 //                .onFail(() -> System.println('That was an error!!!'))
 //                .failWith(new RuntimeException("Error, cannot continue"))
