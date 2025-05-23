@@ -1,8 +1,8 @@
-package info.developia.lib.dao;
+package info.developia.lib;
 
 import java.util.List;
 
-public record ProfileDao(
+public record Profile(
         String status
         , List<String> roles
         , List<Integer> ids

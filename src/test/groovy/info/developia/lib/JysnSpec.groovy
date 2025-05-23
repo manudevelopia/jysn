@@ -1,14 +1,14 @@
 package info.developia.lib
 
-import info.developia.lib.dao.UserDao
 import info.developia.lib.jaysn.Jysn
 import spock.lang.Specification
 
 class JysnSpec extends Specification {
+
     def "should deserialize to object"() {
         given:
         String json =
-        '''{
+                '''{
             "name": "John",
             "age": 30,
             "profile": {
@@ -18,8 +18,8 @@ class JysnSpec extends Specification {
                         }
         }'''
         when:
-        def result = Jysn.from(json).to(UserDao)
-//                .orElse(new UserDao('Default John', 77))
+        def result = Jysn.from(json).to(User)
+//                .orElse(new User('Default John', 77))
 //                .onFail(() -> System.println('That was an error!!!'))
 //                .failWith(new RuntimeException("Error, cannot continue"))
                 .parse()
@@ -40,15 +40,16 @@ class JysnSpec extends Specification {
 
     def "should deserialize to list of object dao"() {
         given:
-        String json = '''{
-          "roles": [ "admin", "user" ],
-          "users": [ { "name": "John", "age": 30 }, { "name": "Sarah", "age": 53 } ]
-        }'''
+        String json = '''[ 
+            { "title": "Lord of Rings 1" }, 
+            { "title": "Lord of Rings 2" } 
+            ]'''
         when:
-        def result = Jaysn.parse(json, UserDao)
+        def result = Jysn.from(json).to(Book).parse()
         then:
-        result.name == 'John'
-        result.age == 30
+        result.size() == 2
+        result[0].title == 'Lord of Rings 1'
+        result[1].title == 'Lord of Rings 2'
     }
 
 //    def "should read json properties"() {

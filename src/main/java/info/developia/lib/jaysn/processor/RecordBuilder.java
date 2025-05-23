@@ -13,7 +13,15 @@ import java.util.List;
 
 public class RecordBuilder {
 
-    public static Record build(Class<?> clazz, JsonValue nodes) {
+    public static Object build(Class<?> clazz, JsonValue nodes) {
+        return switch (nodes) {
+            case JsonObject object -> getRecord(clazz, object);
+            case JsonArray array -> array.elements.stream().map(object -> build(clazz, object)).toList();
+            default -> throw new IllegalStateException("Unexpected value: " + nodes);
+        };
+    }
+
+    private static Record getRecord(Class<?> clazz, JsonObject nodes) {
         RecordComponent[] components = clazz.getRecordComponents();
         Class<?>[] paramTypes = new Class<?>[components.length];
         Object[] args = new Object[components.length];
@@ -21,8 +29,8 @@ public class RecordBuilder {
             RecordComponent comp = components[i];
             paramTypes[i] = comp.getType();
             args[i] = isUserDefinedClass(comp.getType()) ?
-                    build(comp.getType(), ((JsonObject) nodes).members.get(comp.getName())) :
-                    cast(comp, ((JsonObject) nodes).members.get(comp.getName()));
+                    build(comp.getType(), nodes.members.get(comp.getName())) :
+                    cast(comp, nodes.members.get(comp.getName()));
         }
         try {
             Constructor<?> constructor = clazz.getDeclaredConstructor(paramTypes);

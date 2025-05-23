@@ -41,7 +41,7 @@ public class Jysn {
         return this;
     }
 
-    public Record parse() {
+    public Object parse() {
         try {
             var nodes = parse(json);
             return RecordBuilder.build(record, nodes);
