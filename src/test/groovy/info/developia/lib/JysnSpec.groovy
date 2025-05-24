@@ -52,6 +52,21 @@ class JysnSpec extends Specification {
         result[1].title == 'Lord of Rings 2'
     }
 
+    def "should deserialize to list"() {
+        given:
+        String json = '''{
+            "books" : [ 
+                { "title": "Lord of Rings 1" }, 
+                { "title": "Lord of Rings 2" } 
+            ]}'''
+        when:
+        def result = Jysn.from(json).to(Libray).parse()
+        then:
+        result.books.size() == 2
+        result.books[0].title == 'Lord of Rings 1'
+        result.books[1].title == 'Lord of Rings 2'
+    }
+
 //    def "should read json properties"() {
 //        given:
 //        String json = '''{

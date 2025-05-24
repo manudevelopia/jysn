@@ -8,6 +8,7 @@ import info.developia.lib.jaysn.type.JsonValue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class RecordBuilder {
         };
     }
 
-    private static Record getRecord(Class<?> clazz, JsonObject nodes) {
+    private static Object getRecord(Class<?> clazz, JsonObject nodes) {
         RecordComponent[] components = clazz.getRecordComponents();
         Class<?>[] paramTypes = new Class<?>[components.length];
         Object[] args = new Object[components.length];
@@ -34,7 +35,7 @@ public class RecordBuilder {
         }
         try {
             Constructor<?> constructor = clazz.getDeclaredConstructor(paramTypes);
-            return (Record) constructor.newInstance(args);
+            return constructor.newInstance(args);
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -64,12 +65,32 @@ public class RecordBuilder {
         return values.elements.stream().map(item -> switch (item) {
             case JsonString string -> string.value;
             case JsonNumber number -> buildNumber(type, number);
+//            case JsonObject object -> getRecord(((ParameterizedType)comp.getGenericType()).getActualTypeArguments()[0].getClass(), object);
+            case JsonObject object -> getRecord(readGenericType(comp), object);
             default -> throw new IllegalStateException("Unexpected value: " + item);
         }).toList();
 
 //        return isUserDefinedClass(values.elements.getFirst().value.getClass())
 //                ? List.of() //TODO: build(type, values)
 //                : values.elements.stream().map(Object::toString).toList();
+    }
+
+    static Class<?> readGenericType(RecordComponent comp) {
+        var type = comp.getGenericType();
+//        if (type instanceof ParameterizedType pt) {
+//            Type[] typeArgs = pt.getActualTypeArguments();
+//            for (Type arg : typeArgs) {
+//                if (arg instanceof Class<?> clazz && clazz.isRecord()) {
+//                    return getRecord(clazz, object);
+//                }
+//            }
+//        }
+        if (type instanceof ParameterizedType pt && pt.getActualTypeArguments().length == 1) {
+            if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz && clazz.isRecord()) {
+                return clazz;
+            }
+        }
+        throw new IllegalStateException("Unexpected type: " + type);
     }
 
     private static Object buildNumber(String type, JsonNumber number) {

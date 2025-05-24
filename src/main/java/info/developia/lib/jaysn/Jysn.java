@@ -10,7 +10,7 @@ public class Jysn {
     private final String json;
     private Runnable failAction;
     private Class<? extends Record> record;
-    private Record fallback;
+    private Object fallback;
     private RuntimeException throwable;
 
     public Jysn(String json) {
@@ -26,7 +26,7 @@ public class Jysn {
         return this;
     }
 
-    public Jysn orElse(Record fallback) {
+    public Jysn orElse(Object fallback) {
         this.fallback = fallback;
         return this;
     }
