@@ -36,9 +36,9 @@ class JysnSpec extends Specification {
     def "should deserialize to list of object book"() {
         given:
         String json = '''[ 
-                { "title": "Lord of Rings" }, 
-                { "title": "1984" } 
-            ]'''
+                { "title": "Lord of Rings", "authors": [{ "name": "Tolkien" }]}, 
+                { "title": "1984", "authors": [{ "name": "Orwell" }]}
+            ]]'''
         when:
         def result = Jysn.from(json).to(Book).parse()
         then:
@@ -51,14 +51,18 @@ class JysnSpec extends Specification {
         given:
         String json = '''{
             "books" : [ 
-                { "title": "Lord of Rings 1" }, 
-                { "title": "Lord of Rings 2" } 
+                { "title": "Lord of Rings", "authors": [{ "name": "Tolkien" }]}, 
+                { "title": "1984", "authors": [{ "name": "Orwell" }]}
             ]}'''
         when:
         def result = Jysn.from(json).to(Libray).parse()
         then:
         result.books.size() == 2
-        result.books[0].title == 'Lord of Rings 1'
-        result.books[1].title == 'Lord of Rings 2'
+        result.books[0].title == 'Lord of Rings'
+        result.books[0].authors.size() == 1
+        result.books[0].authors[0].name == 'Tolkien'
+        result.books[1].title == '1984'
+        result.books[1].authors.size() == 1
+        result.books[1].authors[0].name == 'Orwell'
     }
 }
