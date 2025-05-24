@@ -10,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class RecordBuilder {
@@ -64,8 +65,7 @@ public class RecordBuilder {
         var type = comp.getGenericType().getTypeName();
         return values.elements.stream().map(item -> switch (item) {
             case JsonString string -> string.value;
-            case JsonNumber number -> buildNumber(type, number);
-//            case JsonObject object -> getRecord(((ParameterizedType)comp.getGenericType()).getActualTypeArguments()[0].getClass(), object);
+            case JsonNumber number -> buildNumber(readGenericType(comp), number);
             case JsonObject object -> getRecord(readGenericType(comp), object);
             default -> throw new IllegalStateException("Unexpected value: " + item);
         }).toList();
@@ -86,19 +86,19 @@ public class RecordBuilder {
 //            }
 //        }
         if (type instanceof ParameterizedType pt && pt.getActualTypeArguments().length == 1) {
-            if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz && clazz.isRecord()) {
+            if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz) {
                 return clazz;
             }
         }
         throw new IllegalStateException("Unexpected type: " + type);
     }
 
-    private static Object buildNumber(String type, JsonNumber number) {
-        return switch (type) {
-            case "java.util.List<java.lang.Integer>" -> Integer.valueOf(number.value);
-            case "java.util.List<java.lang.Long>" -> Long.valueOf(number.value);
-            case "java.util.List<java.lang.Double>" -> Double.valueOf(number.value);
-            case "java.util.List<java.lang.Float>" -> Float.valueOf(number.value);
+    private static Object buildNumber(Type type, JsonNumber number) {
+        return switch (type.getTypeName()) {
+            case "java.lang.Integer" -> Integer.valueOf(number.value);
+            case "java.lang.Long" -> Long.valueOf(number.value);
+            case "java.lang.Double" -> Double.valueOf(number.value);
+            case "java.lang.Float" -> Float.valueOf(number.value);
             default -> throw new IllegalStateException("Unexpected value: " + type);
         };
     }
