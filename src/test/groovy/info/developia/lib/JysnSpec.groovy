@@ -5,24 +5,19 @@ import spock.lang.Specification
 
 class JysnSpec extends Specification {
 
-    def "should deserialize to object"() {
+    def "should deserialize to object with nested fields"() {
         given:
-        String json =
-                '''{
+        String json = '''{
             "name": "John",
             "age": 30,
             "profile": {
-                        "status": "active",
-                        "roles": [ "admin", "user" ],
-                        "ids": [ 1, 2, 3 ]
-                        }
-        }'''
+                "status": "active",
+                "roles": [ "admin", "user" ],
+                "ids": [ 1, 2, 3 ]
+                }
+            }'''
         when:
-        def result = Jysn.from(json).to(User)
-//                .orElse(new User('Default John', 77))
-//                .onFail(() -> System.println('That was an error!!!'))
-//                .failWith(new RuntimeException("Error, cannot continue"))
-                .parse()
+        def result = Jysn.from(json).to(User).parse() as User
         then:
         with(result) {
             name == 'John'
@@ -38,21 +33,21 @@ class JysnSpec extends Specification {
         }
     }
 
-    def "should deserialize to list of object dao"() {
+    def "should deserialize to list of object book"() {
         given:
         String json = '''[ 
-            { "title": "Lord of Rings 1" }, 
-            { "title": "Lord of Rings 2" } 
+                { "title": "Lord of Rings" }, 
+                { "title": "1984" } 
             ]'''
         when:
-        def result = Jysn.from(json).to(Book).parse()
+        def result = Jysn.from(json).to(Book).parse() as Book
         then:
         result.size() == 2
-        result[0].title == 'Lord of Rings 1'
-        result[1].title == 'Lord of Rings 2'
+        result[0].title == 'Lord of Rings'
+        result[1].title == '1984'
     }
 
-    def "should deserialize to list"() {
+    def "should deserialize to object that has a field of object list"() {
         given:
         String json = '''{
             "books" : [ 
