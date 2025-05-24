@@ -53,9 +53,10 @@ class JysnSpec extends Specification {
             "books" : [ 
                 { "title": "Lord of Rings", "authors": [{ "name": "Tolkien" }]}, 
                 { "title": "1984", "authors": [{ "name": "Orwell" }]}
-            ]}'''
+            ],
+            "averageRating": 4.5}'''
         when:
-        def result = Jysn.from(json).to(Libray).parse()
+        def result = Jysn.from(json).to(Library).parse()
         then:
         result.books.size() == 2
         result.books[0].title == 'Lord of Rings'
@@ -64,5 +65,6 @@ class JysnSpec extends Specification {
         result.books[1].title == '1984'
         result.books[1].authors.size() == 1
         result.books[1].authors[0].name == 'Orwell'
+        result.averageRating == 4.5
     }
 }

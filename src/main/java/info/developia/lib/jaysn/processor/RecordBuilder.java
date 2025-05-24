@@ -56,6 +56,8 @@ public class RecordBuilder {
             case "java.lang.Integer" -> Integer.valueOf(value.toString());
             case "long" -> Long.parseLong(value.toString());
             case "java.lang.Long" -> Long.valueOf(value.toString());
+            case "double" -> Double.parseDouble(value.toString());
+            case "java.lang.Double" -> Double.valueOf(value.toString());
             case "java.util.List" -> buildList(comp, (JsonArray) value);
             default -> new RuntimeException("Unsupported type " + comp.getType().getName());
         };

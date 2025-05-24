@@ -46,15 +46,10 @@ public class Jysn {
             var nodes = parse(json);
             return RecordBuilder.build(record, nodes);
         } catch (Exception e) {
-            if (failAction != null) {
-                failAction.run();
-            }
-            if (throwable != null) {
-                throw throwable;
-            }
-            if (fallback == null) {
+            if (failAction != null) failAction.run();
+            if (throwable != null) throw throwable;
+            if (fallback == null)
                 throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
-            }
         }
         return fallback;
     }
