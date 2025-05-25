@@ -44,25 +44,25 @@ public class Jysn {
         return this;
     }
 
-    public <T extends Record> List<T> parseList() {
-        var nodes = parse(json);
-        if (!(nodes instanceof JsonArray)) {
-            throw new RuntimeException("Json cannot be parsed to a list of %s".formatted(record.getName()));
-        }
-        return (List<T>) RecordBuilder.build(record, nodes);
-    }
+//    public <T extends Record> List<T> parseList() {
+//        var nodes = parse(json);
+//        if (!(nodes instanceof JsonArray)) {
+//            throw new RuntimeException("Json cannot be parsed to a list of %s".formatted(record.getName()));
+//        }
+//        return (List<T>) RecordBuilder.build(record, nodes);
+//    }
 
-    public Object parse() {
+    public <T> T parse() {
         try {
             var nodes = parse(json);
-            return RecordBuilder.build(record, nodes);
+            return (T) RecordBuilder.build(record, nodes);
         } catch (Exception e) {
             if (failAction != null) failAction.run();
             if (throwable != null) throw throwable;
             if (fallback == null)
                 throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
         }
-        return fallback;
+        return (T) fallback;
     }
 
     private JsonValue parse(String json) {
