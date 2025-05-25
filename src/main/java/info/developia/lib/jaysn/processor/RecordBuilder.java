@@ -17,13 +17,13 @@ public class RecordBuilder {
 
     public static Object build(Class<?> clazz, JsonValue nodes) {
         return switch (nodes) {
-            case JsonObject object -> getRecord(clazz, object);
+            case JsonObject object -> getInstance(clazz, object);
             case JsonArray array -> array.elements.stream().map(object -> build(clazz, object)).toList();
             default -> throw new IllegalStateException("Unexpected value: " + nodes);
         };
     }
 
-    private static Object getRecord(Class<?> clazz, JsonObject nodes) {
+    private static Object getInstance(Class<?> clazz, JsonObject nodes) {
         RecordComponent[] components = clazz.getRecordComponents();
         Class<?>[] paramTypes = new Class<?>[components.length];
         Object[] args = new Object[components.length];
@@ -64,17 +64,12 @@ public class RecordBuilder {
     }
 
     private static List<?> buildList(RecordComponent comp, JsonArray values) {
-        var type = comp.getGenericType().getTypeName();
         return values.elements.stream().map(item -> switch (item) {
             case JsonString string -> string.value;
             case JsonNumber number -> buildNumber(readGenericType(comp), number);
-            case JsonObject object -> getRecord(readGenericType(comp), object);
+            case JsonObject object -> getInstance(readGenericType(comp), object);
             default -> throw new IllegalStateException("Unexpected value: " + item);
         }).toList();
-
-//        return isUserDefinedClass(values.elements.getFirst().value.getClass())
-//                ? List.of() //TODO: build(type, values)
-//                : values.elements.stream().map(Object::toString).toList();
     }
 
     static Class<?> readGenericType(RecordComponent comp) {
