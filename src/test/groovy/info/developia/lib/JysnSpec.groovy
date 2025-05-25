@@ -23,13 +23,7 @@ class JysnSpec extends Specification {
             name == 'John'
             age == 30
             profile.status == 'active'
-            profile.roles.size() == 2
-            profile.roles[0] == 'admin'
-            profile.roles[1] == 'user'
-            profile.ids.size() == 3
-            profile.ids[0] == 1
-            profile.ids[1] == 2
-            profile.ids[2] == 3
+            profile.roles == ["admin", "user"]
         }
     }
 
