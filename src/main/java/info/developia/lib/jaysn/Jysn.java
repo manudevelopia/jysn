@@ -44,14 +44,6 @@ public class Jysn {
         return this;
     }
 
-//    public <T extends Record> List<T> parseList() {
-//        var nodes = parse(json);
-//        if (!(nodes instanceof JsonArray)) {
-//            throw new RuntimeException("Json cannot be parsed to a list of %s".formatted(record.getName()));
-//        }
-//        return (List<T>) RecordBuilder.build(record, nodes);
-//    }
-
     public <T> T parse() {
         try {
             var nodes = parse(json);
