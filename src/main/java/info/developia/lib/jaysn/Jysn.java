@@ -4,9 +4,10 @@ import info.developia.lib.jaysn.processor.JsonLexer;
 import info.developia.lib.jaysn.processor.JsonParser;
 import info.developia.lib.jaysn.processor.RecordBuilder;
 import info.developia.lib.jaysn.type.JsonArray;
+import info.developia.lib.jaysn.type.JsonObject;
 import info.developia.lib.jaysn.type.JsonValue;
 
-import java.util.List;
+import java.util.function.Function;
 
 public class Jysn {
 
@@ -24,9 +25,24 @@ public class Jysn {
         return new Jysn(json);
     }
 
-    public Jysn to(Class<? extends Record> record) {
-        this.record = record;
-        return this;
+    public <T> T to(Class<? extends Record> record) {
+        return parse(record, (nodes) -> {
+            if (nodes instanceof JsonObject jsonObject) {
+                return (T) RecordBuilder.build(record, jsonObject);
+            }
+            throw new RuntimeException("Expected a JSON object for record");
+        });
+    }
+
+    public <T> T toListOf(Class<? extends Record> record) {
+        return parse(record, (nodes) -> {
+            if (nodes instanceof JsonArray jsonArray) {
+                return (T) jsonArray.elements.stream()
+                        .map(element -> RecordBuilder.build(record, element))
+                        .toList();
+            }
+            throw new RuntimeException("Expected a JSON array for list of records");
+        });
     }
 
     public Jysn orElse(Object fallback) {
@@ -44,10 +60,11 @@ public class Jysn {
         return this;
     }
 
-    public <T> T parse() {
+    public <T> T parse(Class<? extends Record> record, Function<JsonValue, T> function) {
         try {
             var nodes = parse(json);
-            return (T) RecordBuilder.build(record, nodes);
+            return function.apply(nodes);
+//            return (T) RecordBuilder.build(record, nodes);
         } catch (Exception e) {
             if (failAction != null) failAction.run();
             if (throwable != null) throw throwable;
