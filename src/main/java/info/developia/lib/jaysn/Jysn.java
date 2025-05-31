@@ -17,7 +17,7 @@ public class Jysn {
     private Object fallback;
     private RuntimeException throwable;
 
-    public Jysn(String json) {
+    private Jysn(String json) {
         this.json = json;
     }
 
