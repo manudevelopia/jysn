@@ -7,13 +7,13 @@ import info.developia.lib.jaysn.type.JsonArray;
 import info.developia.lib.jaysn.type.JsonObject;
 import info.developia.lib.jaysn.type.JsonValue;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Jysn {
 
     private final String json;
     private Runnable failAction;
-    private Class<? extends Record> record;
     private Object fallback;
     private RuntimeException throwable;
 
@@ -25,19 +25,21 @@ public class Jysn {
         return new Jysn(json);
     }
 
-    public <T> T to(Class<? extends Record> record) {
-        return parse(record, (nodes) -> {
+    @SuppressWarnings("unchecked")
+    public <T extends Record> T to(Class<T> record) {
+        return (T) parse(record, (nodes) -> {
             if (nodes instanceof JsonObject jsonObject) {
-                return (T) RecordBuilder.build(record, jsonObject);
+                return RecordBuilder.build(record, jsonObject);
             }
             throw new RuntimeException("Expected a JSON object for record");
         });
     }
 
-    public <T> T toListOf(Class<? extends Record> record) {
-        return parse(record, (nodes) -> {
+    @SuppressWarnings("unchecked")
+    public <T extends Record> List<T> toListOf(Class<T> record) {
+        return (List<T>) parse(record, (nodes) -> {
             if (nodes instanceof JsonArray jsonArray) {
-                return (T) jsonArray.elements.stream()
+                return jsonArray.elements.stream()
                         .map(element -> RecordBuilder.build(record, element))
                         .toList();
             }
@@ -60,18 +62,17 @@ public class Jysn {
         return this;
     }
 
-    public <T> T parse(Class<? extends Record> record, Function<JsonValue, T> function) {
+    public <T> Object parse(Class<? extends Record> record, Function<JsonValue, T> function) {
         try {
             var nodes = parse(json);
             return function.apply(nodes);
-//            return (T) RecordBuilder.build(record, nodes);
         } catch (Exception e) {
             if (failAction != null) failAction.run();
             if (throwable != null) throw throwable;
             if (fallback == null)
                 throw new RuntimeException("Json cannot be parsed to %s %s".formatted(record.getName(), e.getMessage()));
         }
-        return (T) fallback;
+        return fallback;
     }
 
     private JsonValue parse(String json) {
