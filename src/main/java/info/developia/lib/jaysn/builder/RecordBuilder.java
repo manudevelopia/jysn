@@ -1,4 +1,4 @@
-package info.developia.lib.jaysn.processor;
+package info.developia.lib.jaysn.builder;
 
 import info.developia.lib.jaysn.type.JsonArray;
 import info.developia.lib.jaysn.type.JsonNumber;

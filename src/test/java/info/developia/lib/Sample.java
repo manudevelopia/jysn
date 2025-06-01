@@ -3,6 +3,7 @@ package info.developia.lib;
 import info.developia.lib.jaysn.Jysn;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Sample {
 
@@ -19,6 +20,7 @@ public class Sample {
                 }""";
         User user = Jysn.from(json).to(User.class);
         List<User> users = Jysn.from(json).toListOf(User.class);
+        Stream<User> usersStream = Jysn.from(json).toStream(User.class);
         System.out.println("Name: " + user.name());
         System.out.println("Age: " + user.age());
         System.out.println("Status: " + user.profile().status());

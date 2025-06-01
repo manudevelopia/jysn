@@ -1,14 +1,15 @@
 package info.developia.lib.jaysn;
 
+import info.developia.lib.jaysn.builder.RecordBuilder;
 import info.developia.lib.jaysn.processor.JsonLexer;
 import info.developia.lib.jaysn.processor.JsonParser;
-import info.developia.lib.jaysn.processor.RecordBuilder;
 import info.developia.lib.jaysn.type.JsonArray;
 import info.developia.lib.jaysn.type.JsonObject;
 import info.developia.lib.jaysn.type.JsonValue;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Jysn {
 
@@ -36,15 +37,18 @@ public class Jysn {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Record> List<T> toListOf(Class<T> record) {
-        return (List<T>) parse(record, (nodes) -> {
+    public <T extends Record> Stream<T> toStream(Class<T> record) {
+        return (Stream<T>) parse(record, (nodes) -> {
             if (nodes instanceof JsonArray jsonArray) {
                 return jsonArray.elements.stream()
-                        .map(element -> RecordBuilder.build(record, element))
-                        .toList();
+                        .map(element -> RecordBuilder.build(record, element));
             }
             throw new RuntimeException("Expected a JSON array for list of records");
         });
+    }
+
+    public <T extends Record> List<T> toListOf(Class<T> record) {
+        return toStream(record).toList();
     }
 
     public Jysn orElse(Object fallback) {
