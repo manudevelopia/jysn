@@ -26,5 +26,7 @@ public class Sample {
         System.out.println("Status: " + user.profile().status());
         System.out.println("Roles: " + String.join(", ", user.profile().roles()));
         System.out.println("IDs: " + user.profile().ids());
+
+        Jysn.from(user).toJson();
     }
 }

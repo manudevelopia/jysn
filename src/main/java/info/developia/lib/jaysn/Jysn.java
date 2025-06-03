@@ -22,6 +22,10 @@ public class Jysn {
         this.json = json;
     }
 
+    public static JysnEncoder from(Record record) {
+        return new JysnEncoder(record);
+    }
+
     public static Jysn from(String json) {
         return new Jysn(json);
     }
