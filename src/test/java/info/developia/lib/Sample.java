@@ -19,14 +19,15 @@ public class Sample {
                     }
                 }""";
         User user = Jysn.from(json).to(User.class);
-        List<User> users = Jysn.from(json).toListOf(User.class);
-        Stream<User> usersStream = Jysn.from(json).toStream(User.class);
-        System.out.println("Name: " + user.name());
-        System.out.println("Age: " + user.age());
-        System.out.println("Status: " + user.profile().status());
-        System.out.println("Roles: " + String.join(", ", user.profile().roles()));
-        System.out.println("IDs: " + user.profile().ids());
+//        List<User> users = Jysn.from(json).toListOf(User.class);
+//        Stream<User> usersStream = Jysn.from(json).toStream(User.class);
+//        System.out.println("Name: " + user.name());
+//        System.out.println("Age: " + user.age());
+//        System.out.println("Status: " + user.profile().status());
+//        System.out.println("Roles: " + String.join(", ", user.profile().roles()));
+//        System.out.println("IDs: " + user.profile().ids());
 
-        Jysn.from(user).toJson();
+        String userJson = Jysn.from(user).toJson();
+        System.out.println(userJson);
     }
 }

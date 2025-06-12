@@ -2,38 +2,43 @@ package info.developia.lib.jaysn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
+import java.util.StringJoiner;
 
 public class JysnEncoder {
     private final Record record;
-    private final StringBuilder jsonBuilder = new StringBuilder();
 
     public JysnEncoder(Record record) {
         this.record = record;
     }
 
     public String toJson() {
-        return readRecord(record).toString();
+        return readRecord(record);
     }
 
-    private StringBuilder readRecord(Object record) {
-        StringBuilder jsonBuilder = new StringBuilder();
+    private String readRecord(Object record) {
+        var jsonObject = new StringJoiner(", ", "{", "}");
         for (RecordComponent component : record.getClass().getRecordComponents()) {
-            if (!isUserDefinedClass(component.getType())) {
-                try {
-                    jsonBuilder.append(component.getName()).append(": ")
-                            .append(component.getAccessor().invoke(this.record)).append(", ");
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-                continue;
-            }
+            var property = new StringBuilder();
+            property.append(getPropertyName(component));
+            property.append(":");
             try {
-                return readRecord(component.getAccessor().invoke(this.record));
+                property.append(!isUserDefinedClass(component.getType()) ?
+                        getPropertyValue(component, record) :
+                        readRecord(component.getAccessor().invoke(record)));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
+            jsonObject.add(property);
         }
-        return jsonBuilder;
+        return jsonObject.toString();
+    }
+
+    private String getPropertyName(RecordComponent component) {
+        return String.format("\"%s\"", component.getName());
+    }
+
+    private String getPropertyValue(RecordComponent component, Object record) throws InvocationTargetException, IllegalAccessException {
+        return String.format("\"%s\"", component.getAccessor().invoke(record));
     }
 
     private static boolean isUserDefinedClass(Class<?> clazz) {
