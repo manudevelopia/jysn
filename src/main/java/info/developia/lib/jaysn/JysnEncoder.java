@@ -5,6 +5,7 @@ import java.lang.reflect.RecordComponent;
 
 public class JysnEncoder {
     private final Record record;
+    private final StringBuilder jsonBuilder = new StringBuilder();
 
     public JysnEncoder(Record record) {
         this.record = record;
