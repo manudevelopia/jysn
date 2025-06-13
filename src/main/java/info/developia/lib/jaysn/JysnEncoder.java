@@ -47,7 +47,7 @@ public class JysnEncoder {
 
     private String getPropertyValue(RecordComponent component, Object record) throws InvocationTargetException, IllegalAccessException {
         var value = component.getAccessor().invoke(record);
-        return switch (component.getType().getName()) {
+        return value == null ? "null" : switch (component.getType().getName()) {
             case "java.lang.String" -> formatToString(value);
             case "java.util.List" -> getList((List<?>) value);
             default -> value.toString();
