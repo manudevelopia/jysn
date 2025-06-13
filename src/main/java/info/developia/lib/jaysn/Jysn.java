@@ -22,12 +22,12 @@ public class Jysn {
         this.json = json;
     }
 
-    public static JysnEncoder from(Record record) {
-        return new JysnEncoder(record);
+    public static JysnEncoder from(Record object) {
+        return new JysnEncoder(object);
     }
 
-    public static JysnEncoder from(List<Record> records) {
-        return null;
+    public static JysnEncoder from(List<Record> object) {
+        return new JysnEncoder(object);
     }
 
     public static Jysn from(String json) {

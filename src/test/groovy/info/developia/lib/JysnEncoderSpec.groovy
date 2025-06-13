@@ -12,7 +12,7 @@ class JysnEncoderSpec extends Specification {
         String json = Jysn.from(user).toJson()
 
         then:
-        json == '''{"name":"Alice", "age":25, "profile":{"status":"active", "roles":["user"], "ids":[1,2,3]}}'''
+        json == '''{"name":"Alice","age":25,"profile":{"status":"active","roles":["user"],"ids":[1,2,3]}}'''
     }
 
     def "should encode list of objects to JSON string"() {
@@ -26,6 +26,6 @@ class JysnEncoderSpec extends Specification {
         String json = Jysn.from(books).toJson()
 
         then:
-        json == '''[{"title":"The Hobbit", "authors":[{"name":"Tolkien"}]}, {"title":"1984", "authors":[{"name":"Orwell"}]}]'''
+        json == '''[{"title":"The Hobbit","authors":[{"name":"Tolkien"}]},{"title":"1984","authors":[{"name":"Orwell"}]}]'''
     }
 }
