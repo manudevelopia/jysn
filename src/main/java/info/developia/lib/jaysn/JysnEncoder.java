@@ -2,7 +2,9 @@ package info.developia.lib.jaysn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class JysnEncoder {
     private final Record record;
@@ -34,11 +36,30 @@ public class JysnEncoder {
     }
 
     private String getPropertyName(RecordComponent component) {
-        return String.format("\"%s\"", component.getName());
+        return formatToString(component.getName());
+    }
+
+    private static String formatToString(String text) {
+        return String.format("\"%s\"", text);
     }
 
     private String getPropertyValue(RecordComponent component, Object record) throws InvocationTargetException, IllegalAccessException {
-        return String.format("\"%s\"", component.getAccessor().invoke(record));
+        var value = component.getAccessor().invoke(record);
+        return switch (component.getType().getName()) {
+            case "java.lang.String" -> String.format("\"%s\"", value);
+            case "java.util.List" -> getList((List<?>) value);
+//            default -> throw new RuntimeException("Unsupported type " + component.getType().getName());
+            default -> value.toString();
+        };
+    }
+
+    private String getList(List<?> values) {
+        return values.stream().map(item -> isUserDefinedClass(item.getClass()) ? readRecord(item) :
+                        switch (item) {
+                            case String s -> formatToString(s);
+                            default -> item.toString();
+                        })
+                .collect(Collectors.joining(",", "[", "]"));
     }
 
     private static boolean isUserDefinedClass(Class<?> clazz) {
