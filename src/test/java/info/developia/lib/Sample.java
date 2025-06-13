@@ -3,7 +3,6 @@ package info.developia.lib;
 import info.developia.lib.jaysn.Jysn;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Sample {
 
@@ -19,15 +18,16 @@ public class Sample {
                     }
                 }""";
         User user = Jysn.from(json).to(User.class);
-//        List<User> users = Jysn.from(json).toListOf(User.class);
 //        Stream<User> usersStream = Jysn.from(json).toStream(User.class);
-//        System.out.println("Name: " + user.name());
-//        System.out.println("Age: " + user.age());
-//        System.out.println("Status: " + user.profile().status());
-//        System.out.println("Roles: " + String.join(", ", user.profile().roles()));
-//        System.out.println("IDs: " + user.profile().ids());
+        System.out.println("Name: " + user.name());
+        System.out.println("Age: " + user.age());
+        System.out.println("Status: " + user.profile().status());
+        System.out.println("Roles: " + String.join(", ", user.profile().roles()));
+        System.out.println("IDs: " + user.profile().ids());
 
         String userJson = Jysn.from(user).toJson();
         System.out.println(userJson);
+        String usersJson = Jysn.from(List.of(user)).toJson();
+        System.out.println(usersJson);
     }
 }
