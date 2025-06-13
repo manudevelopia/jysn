@@ -59,7 +59,7 @@ public class RecordBuilder {
             case "double" -> Double.parseDouble(value.toString());
             case "java.lang.Double" -> Double.valueOf(value.toString());
             case "java.util.List" -> buildList(comp, (JsonArray) value);
-            default -> new RuntimeException("Unsupported type " + comp.getType().getName());
+            default -> throw new RuntimeException("Unsupported type " + comp.getType().getName());
         };
     }
 
