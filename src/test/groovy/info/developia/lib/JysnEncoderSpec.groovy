@@ -23,9 +23,9 @@ class JysnEncoderSpec extends Specification {
         ]
 
         when:
-        String json = Jysn.toJson(books)
+        String json = Jysn.from(books).toJson()
 
         then:
-        json == '''[{"title":"The Hobbit","authors":[{"name":"Tolkien"}]},{"title":"1984","authors":[{"name":"Orwell"}]}]'''
+        json == '''[{"title":"The Hobbit", "authors":[{"name":"Tolkien"}]}, {"title":"1984", "authors":[{"name":"Orwell"}]}]'''
     }
 }
