@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class JysnEncoder {
     private final Object object;
 
-    public JysnEncoder(Object object) {
+     JysnEncoder(Object object) {
         this.object = object;
     }
 
