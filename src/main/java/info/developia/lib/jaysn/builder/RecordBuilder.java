@@ -83,14 +83,6 @@ public class RecordBuilder {
 
     static Class<?> readGenericType(RecordComponent comp) {
         var type = comp.getGenericType();
-//        if (type instanceof ParameterizedType pt) {
-//            Type[] typeArgs = pt.getActualTypeArguments();
-//            for (Type arg : typeArgs) {
-//                if (arg instanceof Class<?> clazz && clazz.isRecord()) {
-//                    return getRecord(clazz, object);
-//                }
-//            }
-//        }
         if (type instanceof ParameterizedType pt && pt.getActualTypeArguments().length == 1) {
             if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz) {
                 return clazz;
