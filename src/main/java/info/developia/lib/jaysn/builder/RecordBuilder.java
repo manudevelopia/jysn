@@ -52,12 +52,21 @@ public class RecordBuilder {
     public static Object cast(RecordComponent comp, Object value) {
         return switch (comp.getType().getName()) {
             case "java.lang.String" -> value.toString();
+            case "char", "java.lang.Character" -> value.toString().charAt(0);
             case "int" -> Integer.parseInt(value.toString());
             case "java.lang.Integer" -> Integer.valueOf(value.toString());
             case "long" -> Long.parseLong(value.toString());
             case "java.lang.Long" -> Long.valueOf(value.toString());
             case "double" -> Double.parseDouble(value.toString());
             case "java.lang.Double" -> Double.valueOf(value.toString());
+            case "float" -> Float.parseFloat(value.toString());
+            case "java.lang.Float" -> Float.valueOf(value.toString());
+            case "boolean" -> Boolean.parseBoolean(value.toString());
+            case "java.lang.Boolean" -> Boolean.valueOf(value.toString());
+            case "short" -> Short.parseShort(value.toString());
+            case "java.lang.Short" -> Short.valueOf(value.toString());
+            case "byte" -> Byte.parseByte(value.toString());
+            case "java.lang.Byte" -> Byte.valueOf(value.toString());
             case "java.util.List" -> buildList(comp, (JsonArray) value);
             default -> throw new RuntimeException("Unsupported type " + comp.getType().getName());
         };
