@@ -6,7 +6,6 @@ import info.developia.lib.jaysn.type.JsonObject;
 import info.developia.lib.jaysn.type.JsonString;
 import info.developia.lib.jaysn.type.JsonValue;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
@@ -24,18 +23,18 @@ public class RecordBuilder {
     }
 
     private static Object getInstance(Class<?> clazz, JsonObject nodes) {
-        RecordComponent[] components = clazz.getRecordComponents();
-        Class<?>[] paramTypes = new Class<?>[components.length];
-        Object[] args = new Object[components.length];
+        var components = clazz.getRecordComponents();
+        var paramTypes = new Class<?>[components.length];
+        var args = new Object[components.length];
         for (int i = 0; i < components.length; i++) {
-            RecordComponent comp = components[i];
+            var comp = components[i];
             paramTypes[i] = comp.getType();
             args[i] = isUserDefinedClass(comp.getType()) ?
                     build(comp.getType(), nodes.members.get(comp.getName())) :
                     cast(comp, nodes.members.get(comp.getName()));
         }
         try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor(paramTypes);
+            var constructor = clazz.getDeclaredConstructor(paramTypes);
             return constructor.newInstance(args);
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException e) {
