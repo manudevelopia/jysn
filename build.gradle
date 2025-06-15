@@ -56,6 +56,6 @@ tasks.named('test') {
 
 jmh {
     warmupIterations = 2
-    iterations = 5
+    iterations = 3
     fork = 1
 }
