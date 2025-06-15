@@ -55,11 +55,9 @@ public class JysnEncoder {
     }
 
     private String getList(List<?> values) {
-        return values.stream().map(item -> isUserDefinedClass(item.getClass()) ? readObject(item) :
-                        switch (item) {
-                            case String s -> formatToString(s);
-                            default -> item.toString();
-                        })
+        return values.stream()
+                .map(item -> isUserDefinedClass(item.getClass()) ? readObject(item) :
+                        item instanceof String s ? formatToString(s) : item.toString())
                 .collect(Collectors.joining(",", "[", "]"));
     }
 
