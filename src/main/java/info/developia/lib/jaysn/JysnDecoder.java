@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JysnDecoder {
-
     private final String json;
     private Runnable failAction;
     private Object fallback;

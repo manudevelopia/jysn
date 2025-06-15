@@ -12,7 +12,7 @@ public class JsonLexer {
     }
 
     public List<JsonToken> tokenize() {
-        List<JsonToken> tokens = new ArrayList<>();
+        var tokens = new ArrayList<JsonToken>();
         while (pos < input.length()) {
             char c = input.charAt(pos);
             if (Character.isWhitespace(c)) {
@@ -49,7 +49,7 @@ public class JsonLexer {
 
     private String readString() {
         pos++;
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         while (pos < input.length() && input.charAt(pos) != '"') {
             sb.append(input.charAt(pos++));
         }
@@ -58,7 +58,7 @@ public class JsonLexer {
     }
 
     private String readNumber() {
-        int start = pos;
+        var start = pos;
         while (pos < input.length() && (Character.isDigit(input.charAt(pos)) || input.charAt(pos) == '.' || input.charAt(pos) == '-')) {
             pos++;
         }

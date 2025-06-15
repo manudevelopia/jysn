@@ -21,7 +21,7 @@ public class JysnEncoder {
 
     private String readObject(Object object) {
         var jsonObject = new StringJoiner(",", "{", "}");
-        for (RecordComponent component : object.getClass().getRecordComponents()) {
+        for (var component : object.getClass().getRecordComponents()) {
             var property = new StringBuilder();
             property.append(getPropertyName(component));
             property.append(":");

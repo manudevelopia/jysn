@@ -21,7 +21,7 @@ public class JsonParser {
     }
 
     private JsonValue parseValue() {
-        JsonToken token = tokens.get(pos);
+        var token = tokens.get(pos);
         return switch (token.type) {
             case STRING -> new JsonString(consume().value);
             case NUMBER -> new JsonNumber(consume().value);
@@ -35,7 +35,7 @@ public class JsonParser {
     }
 
     private JsonObject parseObject() {
-        JsonObject obj = new JsonObject();
+        var obj = new JsonObject();
         consume(JsonTokenType.LBRACE);
         if (peek().type != JsonTokenType.RBRACE) {
             do {
@@ -50,7 +50,7 @@ public class JsonParser {
     }
 
     private JsonArray parseArray() {
-        JsonArray array = new JsonArray();
+        var array = new JsonArray();
         consume(JsonTokenType.LBRACKET);
         if (peek().type != JsonTokenType.RBRACKET) {
             do {
@@ -66,7 +66,7 @@ public class JsonParser {
     }
 
     private JsonToken consume(JsonTokenType expected) {
-        JsonToken token = tokens.get(pos);
+        var token = tokens.get(pos);
         if (token.type != expected) {
             throw new RuntimeException("Expected " + expected + " but found " + token.type);
         }
