@@ -22,18 +22,6 @@ public class JysnDecoder {
         this.json = json;
     }
 
-    public static JysnEncoder from(Record object) {
-        return new JysnEncoder(object);
-    }
-
-    public static JysnEncoder from(List<Record> object) {
-        return new JysnEncoder(object);
-    }
-
-    public static JysnDecoder from(String json) {
-        return new JysnDecoder(json);
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends Record> T to(Class<T> record) {
         return (T) parse(record, (nodes) -> {
