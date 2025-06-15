@@ -61,7 +61,7 @@ public class JysnDecoder {
         return this;
     }
 
-    public <T> Object parse(Class<? extends Record> record, Function<JsonValue, T> function) {
+    private <T> Object parse(Class<? extends Record> record, Function<JsonValue, T> function) {
         try {
             var nodes = parse(json);
             return function.apply(nodes);
