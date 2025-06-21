@@ -8,6 +8,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 //@State(Scope.Benchmark)
@@ -15,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class Jaysn {
-    private static final String TEXT = "Hello, world inside java!";
     private final String json = """
             {
               "name": "John",
@@ -26,9 +26,21 @@ public class Jaysn {
                  "ids": [ 1, 2, 3 ]
                 }
             }""";
+    private final User user = new User(
+            "John",
+            30,
+            new Profile(
+                    "active",
+                    List.of("admin", "user"),
+                    List.of(1, 2, 3)));
 
     @Benchmark
-    public void benchmarkStringLength() {
+    public void benchmarkToObject() {
         Jysn.from(json).to(User.class);
+    }
+
+    @Benchmark
+    public void benchmarkToJson() {
+        Jysn.from(user).toJson();
     }
 }
