@@ -10,7 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RecordBuilder {
 
@@ -66,18 +67,19 @@ public class RecordBuilder {
             case "java.lang.Short" -> Short.valueOf(value.toString());
             case "byte" -> Byte.parseByte(value.toString());
             case "java.lang.Byte" -> Byte.valueOf(value.toString());
-            case "java.util.List" -> buildList(comp, (JsonArray) value);
+            case "java.util.List" -> buildStream(comp, (JsonArray) value).toList();
+            case "java.util.Set" -> buildStream(comp, (JsonArray) value).collect(Collectors.toUnmodifiableSet());
             default -> throw new RuntimeException("Unsupported type " + comp.getType().getName());
         };
     }
 
-    private static List<?> buildList(RecordComponent comp, JsonArray values) {
+    private static Stream<?> buildStream(RecordComponent comp, JsonArray values) {
         return values.elements.stream().map(item -> switch (item) {
             case JsonString string -> string.value;
             case JsonNumber number -> buildNumber(readGenericType(comp), number);
             case JsonObject object -> getInstance(readGenericType(comp), object);
             default -> throw new IllegalStateException("Unexpected value: " + item);
-        }).toList();
+        });
     }
 
     static Class<?> readGenericType(RecordComponent comp) {

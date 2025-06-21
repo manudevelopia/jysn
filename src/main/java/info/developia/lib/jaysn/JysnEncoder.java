@@ -49,7 +49,7 @@ public class JysnEncoder {
         var value = component.getAccessor().invoke(record);
         return value == null ? "null" : switch (component.getType().getName()) {
             case "java.lang.String" -> formatToString(value);
-            case "java.util.List" -> getList((List<?>) value);
+            case "java.util.List","java.util.Set" -> getList((List<?>) value);
             default -> value.toString();
         };
     }

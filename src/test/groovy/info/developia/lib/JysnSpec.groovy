@@ -61,4 +61,18 @@ class JysnSpec extends Specification {
         result.books[1].authors[0].name == 'Orwell'
         result.averageRating == 4.5
     }
+
+    def "should deserialize to object with set"() {
+        given:
+        String json = ''' {
+                "votes": ["user1", "user2", "user3"]
+            }
+        '''
+        when:
+        def result = Jysn.from(json).to(UniqueVotes)
+        then:
+        with(result) {
+            votes == ['user1', 'user2', 'user3'] as Set
+        }
+    }
 }
