@@ -3,7 +3,7 @@ package info.developia.lib
 import info.developia.lib.jaysn.Jysn
 import spock.lang.Specification
 
-class JysnSpec extends Specification {
+class JysnDecoderSpec extends Specification {
 
     def "should deserialize to object with nested fields"() {
         given:
