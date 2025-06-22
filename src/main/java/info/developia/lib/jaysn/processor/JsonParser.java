@@ -22,9 +22,9 @@ public class JsonParser {
 
     private JsonValue parseValue() {
         var token = tokens.get(pos);
-        return switch (token.type) {
-            case STRING -> new JsonString(consume().value);
-            case NUMBER -> new JsonNumber(consume().value);
+        return switch (token.type()) {
+            case STRING -> new JsonString(consume().value());
+            case NUMBER -> new JsonNumber(consume().value());
             case LBRACE -> parseObject();
             case LBRACKET -> parseArray();
             case TRUE -> { consume(); yield new JsonString("true"); }
@@ -37,9 +37,9 @@ public class JsonParser {
     private JsonObject parseObject() {
         var obj = new JsonObject();
         consume(JsonTokenType.LBRACE);
-        if (peek().type != JsonTokenType.RBRACE) {
+        if (peek().type() != JsonTokenType.RBRACE) {
             do {
-                String key = consume(JsonTokenType.STRING).value;
+                String key = consume(JsonTokenType.STRING).value();
                 consume(JsonTokenType.COLON);
                 JsonValue value = parseValue();
                 obj.members.put(key, value);
@@ -52,7 +52,7 @@ public class JsonParser {
     private JsonArray parseArray() {
         var array = new JsonArray();
         consume(JsonTokenType.LBRACKET);
-        if (peek().type != JsonTokenType.RBRACKET) {
+        if (peek().type() != JsonTokenType.RBRACKET) {
             do {
                 array.elements.add(parseValue());
             } while (match(JsonTokenType.COMMA));
@@ -67,14 +67,14 @@ public class JsonParser {
 
     private JsonToken consume(JsonTokenType expected) {
         var token = tokens.get(pos);
-        if (token.type != expected) {
-            throw new RuntimeException("Expected " + expected + " but found " + token.type);
+        if (token.type() != expected) {
+            throw new RuntimeException("Expected " + expected + " but found " + token.type());
         }
         return consume();
     }
 
     private boolean match(JsonTokenType expected) {
-        if (peek().type == expected) {
+        if (peek().type() == expected) {
             consume();
             return true;
         }
