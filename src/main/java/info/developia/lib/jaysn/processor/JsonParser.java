@@ -21,7 +21,7 @@ public class JsonParser {
     }
 
     private JsonValue parseValue() {
-        var token = tokens.get(pos);
+        var token = peek();
         return switch (token.type()) {
             case STRING -> new JsonString(consume().value());
             case NUMBER -> new JsonNumber(consume().value());
@@ -66,7 +66,7 @@ public class JsonParser {
     }
 
     private JsonToken consume(JsonTokenType expected) {
-        var token = tokens.get(pos);
+        var token = peek();
         if (token.type() != expected) {
             throw new RuntimeException("Expected " + expected + " but found " + token.type());
         }
